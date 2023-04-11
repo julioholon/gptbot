@@ -88,7 +88,17 @@ client.on(Events.MessageCreate, async message => {
         const prompt = await db.get(roles[i]);
         console.log(prompt);
         console.log(message.content);
-        const res = await chat.send(`${prompt}. ${message.content}`);
+        const res = await chat.send({
+          model: 'gpt-3.5-turbo-0301',
+          messages: [{
+            role: 'system',
+            content: prompt,
+          }, {
+            role: 'user',
+            content: message.content,
+          }],
+          max_tokens: 200,
+        });
         await message.reply(`**${roles[i]}**: ${res.choices[0].message.content}`);
       }
     }
